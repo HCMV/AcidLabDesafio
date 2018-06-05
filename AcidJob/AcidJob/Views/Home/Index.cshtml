@@ -1,0 +1,174 @@
+﻿@model AcidJob.Models.Myview
+
+@{
+                /**/
+
+                ViewBag.Title = "Ejemplo";
+}
+
+<h2>Index</h2>
+@section Scripts {
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <link href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.10.4/themes/south-street/jquery-ui.css" rel="stylesheet" />
+    <script>
+        $(document).ready(function () {
+            $("#Fechas_Fecha").datepicker();
+            $("#Fechas_Fecha2").datepicker();
+            
+            //valida post
+            $("#enviaform").click(function () {
+
+                if ($("#Fechas_Fecha").val() == "") {
+                    alert("Complete Fecha Inicio");
+                    $("#Fechas_Fecha").focus();
+                } else if ($("#Fechas_Fecha2").val() == "") {
+                    alert("Complete Fecha Termino");
+                    $("#Fechas_Fecha2").focus();
+                }else if ($.datepicker.parseDate('dd/mm/yy', $("#Fechas_Fecha").val()) > $.datepicker.parseDate('dd/mm/yy', $("#Fechas_Fecha2").val())) {
+                    alert("Fecha inicial " + $("#Fechas_Fecha").val() + ' es mayor a fecha de termino ' + $("#Fechas_Fecha2").val() + ", favor corregir la fecha por una mayor");
+                    $("#Fechas_Fecha2").focus();
+                } else if ($("#paises").val() == "") {
+                    alert("Seleccione Pais");
+                    $("#paises").focus();
+                }
+
+               
+                //detiene event post si falta completar algo // en firefox escapa
+                if (event.preventDefault) {
+                    
+                    event.preventDefault();
+                } else {
+                    event.returnValue = false;
+
+                } });
+        
+        })
+
+     
+    <script>
+        $.datepicker.regional['es'] = {
+            closeText: 'Cerrar',
+            prevText: '< Ant',
+            nextText: 'Sig >',
+            currentText: 'Hoy',
+            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+            weekHeader: 'Sm',
+            dateFormat: 'dd/mm/yy',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['es']);
+        $(function () {
+            $("#Fechas_fecha").datepicker();
+        });
+    </script>
+
+
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <h4>fechas</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+
+            <div class="col-md-4">
+                @Html.LabelFor(model => model.Fechas.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.EditorFor(model => model.Fechas.Fecha, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Fechas.Fecha, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+                @Html.LabelFor(model => model.Fechas.Fecha2, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.EditorFor(model => model.Fechas.Fecha2, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Fechas.Fecha2, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @Html.DropDownList("paises", ViewBag.Roles as SelectList, "Seleccione Pais", new { @class = "form-control" })
+            </div>
+                <div class="col-md-2">
+                    <input type="submit" id="enviaform" value="Buscar" class="btn btn-default" />
+                </div>
+        </div>
+        <div class="form-group">
+            <table id="example" class="table table-striped table-bordered text-centered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th colspan="3">Birth rate, crude (per 1,000 people)</th>
+                    </tr>
+                    <tr>
+                        <th>Pais</th>
+                        <th>A&ntilde;o</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (ViewBag.natalidad != null)
+                    {
+                        foreach (var natalidad in ViewBag.natalidad)
+                        {
+                    <tr>
+                        <td>@natalidad.Countryiso3Code</td>
+                        <td>@natalidad.Date</td>
+                        <td>@natalidad.Value</td>
+                    </tr>
+                        }
+                    }else {
+                        <tr><td rowspan="3">No se encontraron datos</td></tr>
+                    }
+
+                </tbody>
+            </table>
+
+        </div>
+
+        <div class="form-group">
+            <table id="example" class="table table-striped table-bordered " style="width:100%">
+                <thead>
+                    <tr>
+                        <th colspan="3">Death rate, crude (per 1,000 people)</th>
+                    </tr>
+                    <tr>
+                        <th>Pais</th>
+                        <th>A&ntilde;o</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (ViewBag.mortalidad != null)
+                    {
+                        foreach (var mortalidad in ViewBag.mortalidad)
+                        {
+                            <tr>
+                                <td>@mortalidad.Countryiso3Code</td>
+                                <td>@mortalidad.Date</td>
+                                <td>@mortalidad.Value</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td rowspan="3">No se encontraron datos</td></tr>
+                    }
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+
+
+
